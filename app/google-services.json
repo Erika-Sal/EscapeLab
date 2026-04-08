@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "454129030838",
+    "project_id": "escapelab-decb5",
+    "storage_bucket": "escapelab-decb5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:454129030838:android:db123b84409bf2633f7817",
+        "android_client_info": {
+          "package_name": "com.example.escapelab"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBa2z16GVjsi4pe389iwBxWtCHdyn_c5eA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
