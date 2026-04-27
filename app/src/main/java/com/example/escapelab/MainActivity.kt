@@ -6,11 +6,16 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Games
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -63,6 +68,9 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreen() {
     var selectedTab by remember { mutableStateOf(0) }
+    var activeSessionCode by remember { mutableStateOf("") }
+    val gameViewModel: GameViewModel = viewModel()
+    val lobbyViewModel: LobbyViewModel = viewModel()
 
     Box(modifier = Modifier.fillMaxSize()) {
         when (selectedTab) {
@@ -78,39 +86,78 @@ fun MainScreen() {
                 )
             }
             2 -> ProfileScreen()
+            3 -> {
+                LaunchedEffect(selectedTab) {
+                    lobbyViewModel.resetSession()
+                }
+                LobbyScreen(
+                    viewModel = lobbyViewModel,
+                    onGameStart = { code ->
+                        activeSessionCode = code
+                        gameViewModel.init(code)
+                        selectedTab = 4
+                    }
+                )
+            }
+            4 -> {
+                val session by gameViewModel.session.collectAsState()
+                when (session?.status) {
+                    "finished" -> VictoryScreen(
+                        onReturnHome = {
+                            activeSessionCode = ""
+                            selectedTab = 0
+                        }
+                    )
+                    else -> PuzzleScreen(
+                        viewModel = gameViewModel,
+                        onGameFinished = {
+                            activeSessionCode = ""
+                            selectedTab = 0
+                        }
+                    )
+                }
+            }
         }
 
-        // Bottom nav bar
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .background(BackgroundMid)
-        ) {
-            Row(
+        // Hide bottom nav during active game
+        if (selectedTab != 4) {
+            Box(
                 modifier = Modifier
+                    .align(Alignment.BottomCenter)
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                    .background(BackgroundMid)
             ) {
-                NavItem(
-                    icon = "🏠",
-                    label = "HOME",
-                    selected = selectedTab == 0,
-                    onClick = { selectedTab = 0 }
-                )
-                NavItem(
-                    icon = "🔨",
-                    label = "BUILD",
-                    selected = selectedTab == 1,
-                    onClick = { selectedTab = 1 }
-                )
-                NavItem(
-                    icon = "👤",
-                    label = "PROFILE",
-                    selected = selectedTab == 2,
-                    onClick = { selectedTab = 2 }
-                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    NavItem(
+                        icon = Icons.Filled.Home,
+                        label = "HOME",
+                        selected = selectedTab == 0,
+                        onClick = { selectedTab = 0 }
+                    )
+                    NavItem(
+                        icon = Icons.Filled.Build,
+                        label = "BUILD",
+                        selected = selectedTab == 1,
+                        onClick = { selectedTab = 1 }
+                    )
+                    NavItem(
+                        icon = Icons.Filled.Person,
+                        label = "PROFILE",
+                        selected = selectedTab == 2,
+                        onClick = { selectedTab = 2 }
+                    )
+                    NavItem(
+                        icon = Icons.Filled.Games,
+                        label = "PLAY",
+                        selected = selectedTab == 3,
+                        onClick = { selectedTab = 3 }
+                    )
+                }
             }
         }
     }
@@ -118,7 +165,7 @@ fun MainScreen() {
 
 @Composable
 fun NavItem(
-    icon: String,
+    icon: ImageVector,
     label: String,
     selected: Boolean,
     onClick: () -> Unit
@@ -127,9 +174,14 @@ fun NavItem(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .clickable { onClick() }
-            .padding(horizontal = 24.dp, vertical = 4.dp)
+            .padding(horizontal = 16.dp, vertical = 4.dp)
     ) {
-        Text(icon, fontSize = 20.sp)
+        Icon(
+            imageVector = icon,
+            contentDescription = label,
+            tint = if (selected) AmberGlow else ParchmentDim,
+            modifier = Modifier.size(24.dp)
+        )
         Spacer(Modifier.height(2.dp))
         Text(
             label,

@@ -124,5 +124,6 @@ fun LoginScreen(
                 Text("No account? Join the lab", color = ParchmentDim)
             }
         }
+
     }
 }

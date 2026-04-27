@@ -13,13 +13,13 @@ class RoomRepository {
             val userId = auth.currentUser?.uid ?: return Result.failure(Exception("Not logged in"))
             val roomRef = db.collection("rooms").document()
             val roomId = roomRef.id
-
             val roomData = hashMapOf(
                 "roomId" to roomId,
                 "creatorId" to userId,
                 "title" to room.title,
                 "playerCount" to room.playerCount,
-                "isPublic" to room.isPublic
+                "isPublic" to room.isPublic,
+                "timeLimitSeconds" to room.timeLimitSeconds // add this line
             )
             roomRef.set(roomData).await()
 

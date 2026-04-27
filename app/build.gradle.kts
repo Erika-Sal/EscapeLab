@@ -56,7 +56,7 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
-
+    implementation("androidx.compose.material:material-icons-extended:1.6.0")
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation("androidx.navigation:navigation-compose:2.7.7")
@@ -64,5 +64,6 @@ dependencies {
     // ViewModel for Compose
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
     implementation("androidx.compose.foundation:foundation:1.6.0")
+    implementation("io.coil-kt:coil-compose:2.6.0")
 
 }

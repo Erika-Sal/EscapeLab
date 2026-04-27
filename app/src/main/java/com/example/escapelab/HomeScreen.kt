@@ -14,6 +14,8 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.escapelab.ui.theme.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 
 data class MockRoom(
     val title: String,
@@ -59,8 +61,13 @@ fun HomeScreen(
                         style = MaterialTheme.typography.headlineLarge,
                         fontSize = 24.sp
                     )
-                    Text("👤", fontSize = 24.sp)
-                }
+
+                    Icon(
+                        imageVector = Icons.Filled.AccountCircle,
+                        contentDescription = "Profile",
+                        tint = AmberGlow,
+                        modifier = Modifier.size(28.dp)
+                    )                }
 
                 Spacer(Modifier.height(20.dp))
 

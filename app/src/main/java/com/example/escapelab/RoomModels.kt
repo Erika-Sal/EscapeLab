@@ -5,7 +5,8 @@ data class Puzzle(
     val playerIndex: Int = 0,
     val title: String = "",
     val clueText: String = "",
-    val answer: String = ""
+    val answer: String = "",
+    val imageUri: String = ""
 )
 
 data class Stage(
@@ -20,5 +21,6 @@ data class Room(
     val title: String = "",
     val playerCount: Int = 2,
     val isPublic: Boolean = false,
+    val timeLimitSeconds: Int = 600, // default 10 minutes
     val stages: List<Stage> = emptyList()
 )
