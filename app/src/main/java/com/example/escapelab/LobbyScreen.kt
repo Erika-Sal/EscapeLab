@@ -20,7 +20,11 @@ import androidx.compose.ui.unit.sp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.example.escapelab.ui.theme.*
-
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.HourglassEmpty
+import androidx.compose.material.icons.filled.Chat
+import androidx.compose.material.icons.filled.Person
 @Composable
 fun LobbyScreen(
     viewModel: LobbyViewModel,
@@ -306,7 +310,13 @@ fun LobbyScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("👤", fontSize = 20.sp)
+                            Icon(
+                                imageVector = Icons.Filled.Person,
+                                contentDescription = "Player",
+                                tint = ParchmentDim,
+                                modifier = Modifier.size(24.dp)
+                            )
+
                             Spacer(Modifier.width(12.dp))
                             Text(player.displayName, color = Parchment, fontSize = 14.sp)
                         }

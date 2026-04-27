@@ -20,7 +20,11 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import com.example.escapelab.ui.theme.*
-
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.HourglassEmpty
+import androidx.compose.material.icons.filled.Chat
+import androidx.compose.material.icons.filled.Person
 @Composable
 fun BossScreen(
     viewModel: GameViewModel,
@@ -161,7 +165,19 @@ fun BossScreen(
                     ),
                     contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
                 ) {
-                    Text("💬 Chat", fontSize = 13.sp, color = Parchment)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Chat,
+                            contentDescription = "Chat",
+                            tint = Parchment,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Text("Chat", fontSize = 13.sp, color = Parchment)
+                    }
+
                 }
             }
 
@@ -356,11 +372,13 @@ fun BossScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(
-                                if (done) "✓" else "⏳",
-                                fontSize = 14.sp,
-                                color = if (done) Color(0xFF55E09A) else ParchmentDim
+                            Icon(
+                                imageVector = if (done) Icons.Filled.Check else Icons.Filled.HourglassEmpty,
+                                contentDescription = null,
+                                tint = if (done) Color(0xFF55E09A) else ParchmentDim,
+                                modifier = Modifier.size(16.dp)
                             )
+
                             Spacer(Modifier.width(8.dp))
                             Text(player.displayName, color = Parchment, fontSize = 13.sp)
                         }

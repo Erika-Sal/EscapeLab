@@ -15,7 +15,11 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.escapelab.ui.theme.*
-
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.HourglassEmpty
+import androidx.compose.material.icons.filled.Chat
+import androidx.compose.material.icons.filled.Person
 @Composable
 fun PuzzleScreen(
     viewModel: GameViewModel,
@@ -79,7 +83,13 @@ fun PuzzleScreen(
                                         vertical = 6.dp
                                     )
                                 ) {
-                                    Text("💬", fontSize = 16.sp)
+                                    Icon(
+                                        imageVector = Icons.Filled.Chat,
+                                        contentDescription = "Chat",
+                                        tint = Parchment,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+
                                 }
                                 if (chatMessages.isNotEmpty()) {
                                     Box(
@@ -244,12 +254,14 @@ fun PuzzleScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text(
-                                        if (player.hasSubmittedCorrect) "✓" else "⏳",
-                                        fontSize = 14.sp,
-                                        color = if (player.hasSubmittedCorrect)
-                                            Color(0xFF55E09A) else ParchmentDim
+                                    Icon(
+                                        imageVector = if (player.hasSubmittedCorrect)
+                                            Icons.Filled.Check else Icons.Filled.HourglassEmpty,
+                                        contentDescription = null,
+                                        tint = if (player.hasSubmittedCorrect) Color(0xFF55E09A) else ParchmentDim,
+                                        modifier = Modifier.size(16.dp)
                                     )
+
                                     Spacer(Modifier.width(8.dp))
                                     Text(
                                         player.displayName,
