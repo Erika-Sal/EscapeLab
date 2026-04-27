@@ -173,7 +173,6 @@ class SessionRepository {
     }
 
     suspend fun setTimer(code: String, durationSeconds: Int) {
-        // Store both the end time AND the server offset
         val clientTime = System.currentTimeMillis()
         val endTime = clientTime + (durationSeconds * 1000L)
         db.collection("sessions").document(code)

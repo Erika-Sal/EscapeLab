@@ -38,7 +38,6 @@ fun LobbyScreen(
     val db = FirebaseFirestore.getInstance()
     val auth = FirebaseAuth.getInstance()
 
-    // Load my rooms
     LaunchedEffect(Unit) {
         db.collection("rooms")
             .whereEqualTo("creatorId", auth.currentUser?.uid ?: "")
@@ -78,7 +77,6 @@ fun LobbyScreen(
 
             if (sessionCode.isEmpty()) {
 
-                // HOST SECTION
                 item {
                     Box(
                         modifier = Modifier
@@ -175,7 +173,6 @@ fun LobbyScreen(
                     }
                 }
 
-                // DIVIDER
                 item {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -193,7 +190,6 @@ fun LobbyScreen(
                     }
                 }
 
-                // JOIN SECTION
                 item {
                     Box(
                         modifier = Modifier
@@ -255,7 +251,6 @@ fun LobbyScreen(
 
             } else {
 
-                // IN SESSION — show lobby
                 item {
                     Box(
                         modifier = Modifier

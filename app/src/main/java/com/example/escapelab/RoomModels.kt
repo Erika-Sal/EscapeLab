@@ -21,6 +21,6 @@ data class Room(
     val title: String = "",
     val playerCount: Int = 2,
     val isPublic: Boolean = false,
-    val timeLimitSeconds: Int = 600, // default 10 minutes
+    val timeLimitSeconds: Int = 600,
     val stages: List<Stage> = emptyList()
 )

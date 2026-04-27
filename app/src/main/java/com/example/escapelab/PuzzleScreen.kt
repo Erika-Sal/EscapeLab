@@ -54,7 +54,6 @@ fun PuzzleScreen(
                 ) {
                     Spacer(Modifier.height(8.dp))
 
-                    // Header row
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -106,7 +105,6 @@ fun PuzzleScreen(
 
                     Spacer(Modifier.height(8.dp))
 
-                    // Timer bar
                     TimerBar(timeRemainingSeconds = timeRemaining)
 
                     Spacer(Modifier.height(8.dp))
@@ -126,7 +124,6 @@ fun PuzzleScreen(
                             CircularProgressIndicator(color = AmberMid)
                         }
                     } else {
-                        // Puzzle card
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -153,7 +150,6 @@ fun PuzzleScreen(
 
                         Spacer(Modifier.height(24.dp))
 
-                        // Answer section
                         if (answerResult != AnswerResult.Correct) {
                             OutlinedTextField(
                                 value = answerInput,
@@ -232,7 +228,6 @@ fun PuzzleScreen(
 
                         Spacer(Modifier.height(24.dp))
 
-                        // Teammate progress
                         Text(
                             "// TEAMMATE PROGRESS",
                             style = MaterialTheme.typography.labelLarge,
@@ -270,7 +265,6 @@ fun PuzzleScreen(
                     }
                 }
 
-                // Chat overlay
                 ChatOverlay(
                     viewModel = viewModel,
                     isVisible = showChat,

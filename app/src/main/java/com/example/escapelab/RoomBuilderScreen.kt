@@ -57,7 +57,6 @@ fun RoomBuilderScreen(
                 Text("craft your escape", style = MaterialTheme.typography.labelLarge)
                 Spacer(Modifier.height(20.dp))
 
-                // Room title
                 OutlinedTextField(
                     value = roomTitle,
                     onValueChange = { viewModel.updateTitle(it) },
@@ -74,7 +73,6 @@ fun RoomBuilderScreen(
                 )
                 Spacer(Modifier.height(16.dp))
 
-                // Player count selector
                 Text(
                     "// NUMBER OF PLAYERS",
                     style = MaterialTheme.typography.labelLarge,
@@ -111,7 +109,6 @@ fun RoomBuilderScreen(
 
                 Spacer(Modifier.height(20.dp))
 
-                // Time limit selector
                 Text(
                     "// TIME LIMIT",
                     style = MaterialTheme.typography.labelLarge,
@@ -160,7 +157,6 @@ fun RoomBuilderScreen(
 
                 Spacer(Modifier.height(20.dp))
 
-                // Public toggle
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,

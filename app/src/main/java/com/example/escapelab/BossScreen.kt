@@ -45,7 +45,6 @@ fun BossScreen(
     var hasSubmitted by remember { mutableStateOf(false) }
     var correctCode by remember { mutableStateOf("") }
 
-    // Show time up screen if timer expired
     if (timerExpired) {
         TimeUpScreen(onReturnHome = onGameFinished)
         return
@@ -142,7 +141,6 @@ fun BossScreen(
         ) {
             Spacer(Modifier.height(16.dp))
 
-            // Header row with chat button
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -169,7 +167,7 @@ fun BossScreen(
 
             Spacer(Modifier.height(8.dp))
 
-            // Timer bar
+
             TimerBar(timeRemainingSeconds = timeRemaining)
 
             Spacer(Modifier.height(8.dp))
@@ -193,7 +191,6 @@ fun BossScreen(
             if (myClue.isEmpty()) {
                 CircularProgressIndicator(color = AmberMid)
             } else {
-                // Clue card
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -233,7 +230,6 @@ fun BossScreen(
 
                 Spacer(Modifier.height(24.dp))
 
-                // Code entry or submitted state
                 if (!hasSubmitted) {
                     Text(
                         "// ENTER THE FULL ${session?.playerCount ?: 2}-DIGIT CODE",
@@ -343,7 +339,6 @@ fun BossScreen(
 
                 Spacer(Modifier.height(24.dp))
 
-                // Team status
                 Text(
                     "// TEAM STATUS",
                     style = MaterialTheme.typography.labelLarge,
@@ -379,7 +374,6 @@ fun BossScreen(
             }
         }
 
-        // Chat overlay
         ChatOverlay(
             viewModel = viewModel,
             isVisible = showChat,

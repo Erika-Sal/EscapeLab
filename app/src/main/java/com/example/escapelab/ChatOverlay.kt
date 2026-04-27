@@ -33,7 +33,6 @@ fun ChatOverlay(
     val listState = rememberLazyListState()
     val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
 
-    // Auto scroll to bottom when new messages arrive
     LaunchedEffect(messages.size) {
         if (messages.isNotEmpty()) {
             listState.animateScrollToItem(messages.size - 1)
@@ -58,7 +57,6 @@ fun ChatOverlay(
                     .background(BackgroundMid, RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
                     .padding(16.dp)
             ) {
-                // Header
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -78,7 +76,6 @@ fun ChatOverlay(
                 Divider(color = AmberDim.copy(alpha = 0.3f))
                 Spacer(Modifier.height(8.dp))
 
-                // Messages
                 LazyColumn(
                     state = listState,
                     modifier = Modifier
@@ -141,7 +138,6 @@ fun ChatOverlay(
 
                 Spacer(Modifier.height(8.dp))
 
-                // Input
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,

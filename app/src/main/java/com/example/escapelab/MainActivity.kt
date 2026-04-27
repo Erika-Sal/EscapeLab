@@ -119,7 +119,6 @@ fun MainScreen() {
             }
         }
 
-        // Hide bottom nav during active game
         if (selectedTab != 4) {
             Box(
                 modifier = Modifier

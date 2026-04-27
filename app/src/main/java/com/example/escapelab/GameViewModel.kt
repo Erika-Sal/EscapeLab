@@ -46,7 +46,6 @@ class GameViewModel : ViewModel() {
                     roomId = s.roomId
                     loadMyPuzzle(s.currentStage)
                 } else if (s != null && s.currentStage != lastLoadedStage) {
-                    // Only reload puzzle if stage changed
                     loadMyPuzzle(s.currentStage)
                 }
             }
@@ -64,7 +63,6 @@ class GameViewModel : ViewModel() {
     private var lastLoadedStage = -1
 
     private fun loadMyPuzzle(stageIndex: Int) {
-        // Don't reload if we already loaded this stage
         if (stageIndex == lastLoadedStage) return
         lastLoadedStage = stageIndex
 
@@ -96,7 +94,6 @@ class GameViewModel : ViewModel() {
                         answer = puzzleDoc.getString("answer") ?: "",
                         playerIndex = myIndex
                     )
-                    // Only reset answer when moving to a NEW stage
                     answerInput.value = ""
                     answerResult.value = AnswerResult.Idle
                 }
@@ -123,12 +120,10 @@ class GameViewModel : ViewModel() {
 
             answerResult.value = AnswerResult.Correct
 
-            // Mark this player as solved in Firestore
             db.collection("sessions").document(sessionCode)
                 .collection("players").document(userId)
                 .update("hasSubmittedCorrect", true).await()
 
-            // Check if ALL players have solved — if so advance stage
             checkStageGate()
         }
     }
@@ -142,16 +137,12 @@ class GameViewModel : ViewModel() {
                 val currentStage = sessionSnap.getLong("currentStage")?.toInt() ?: 0
                 val playerCount = sessionSnap.getLong("playerCount")?.toInt() ?: 2
 
-                // Get all players
                 val playersSnap = db.collection("sessions").document(sessionCode)
                     .collection("players").get()
 
-                // We check this outside transaction since subcollection reads
-                // aren't supported inside transactions
                 transaction.update(sessionRef, "stageCheckPending", true)
             }.await()
 
-            // Do the actual check outside transaction
             val playersSnap = db.collection("sessions").document(sessionCode)
                 .collection("players").get().await()
 
@@ -163,7 +154,6 @@ class GameViewModel : ViewModel() {
                 val currentStage = session.value?.currentStage ?: 0
                 val playerCount = session.value?.playerCount ?: 2
 
-                // Reset all players and advance stage
                 val batch = db.batch()
                 playersSnap.documents.forEach { doc ->
                     batch.update(doc.reference, "hasSubmittedCorrect", false)
@@ -172,7 +162,6 @@ class GameViewModel : ViewModel() {
                 val sessionRef = db.collection("sessions").document(sessionCode)
                 val nextStage = currentStage + 1
 
-                // Check if this was the last stage — go to boss
                 val stagesSnap = db.collection("rooms").document(roomId)
                     .collection("stages").get().await()
 
@@ -185,7 +174,6 @@ class GameViewModel : ViewModel() {
                 batch.commit().await()
             }
         } catch (e: Exception) {
-            // stage gate check failed
         }
     }
 
@@ -224,15 +212,11 @@ class GameViewModel : ViewModel() {
                         .document(sessionCode).get().await()
                     val afterRead = System.currentTimeMillis()
 
-                    // Estimate when the server actually wrote this
-                    // by accounting for half the round trip time
                     val networkLatency = (afterRead - beforeRead) / 2
 
                     endMs = sessionDoc.getLong("timerEndMs")
                     if (endMs != null) {
-                        // Adjust endMs to account for network delay
-                        // Don't adjust — the endMs is absolute server time
-                        // just note how long the read took
+
                     } else {
                         kotlinx.coroutines.delay(500)
                     }

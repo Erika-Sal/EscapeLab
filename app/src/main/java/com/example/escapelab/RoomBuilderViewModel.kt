@@ -17,14 +17,13 @@ class RoomBuilderViewModel : ViewModel() {
     val saveState: StateFlow<SaveState> = _saveState
 
     fun updateTitle(title: String) { roomTitle.value = title }
-    val timeLimit = MutableStateFlow(600) // default 10 minutes
+    val timeLimit = MutableStateFlow(600)
 
     fun updateTimeLimit(seconds: Int) {
         timeLimit.value = seconds
     }
     fun updatePlayerCount(count: Int) {
         playerCount.value = count
-        // update existing stages to match new player count
         stages.value = stages.value.map { stage ->
             val currentPuzzles = stage.puzzles.toMutableList()
             while (currentPuzzles.size < count) {

@@ -50,7 +50,6 @@ fun HomeScreen(
         ) {
             item {
                 Spacer(Modifier.height(20.dp))
-                // Top bar
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -71,7 +70,6 @@ fun HomeScreen(
 
                 Spacer(Modifier.height(20.dp))
 
-                // Hero section
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -122,7 +120,6 @@ fun HomeScreen(
 
                 Spacer(Modifier.height(24.dp))
 
-                // Section label
                 Text(
                     "// FEATURED ROOMS",
                     style = MaterialTheme.typography.labelLarge,
