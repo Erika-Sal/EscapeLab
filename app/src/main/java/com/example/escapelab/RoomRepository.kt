@@ -10,30 +10,40 @@ class RoomRepository {
 
     suspend fun saveRoom(room: Room): Result<String> {
         return try {
-            val userId = auth.currentUser?.uid ?: return Result.failure(Exception("Not logged in"))
-            val roomRef = db.collection("rooms").document()
-            val roomId = roomRef.id
+            val userId = auth.currentUser?.uid
+                ?: return Result.failure(Exception("Not logged in"))
+
+            val roomId = if (room.roomId.isNotEmpty()) room.roomId
+            else db.collection("rooms").document().id
+
             val roomData = hashMapOf(
                 "roomId" to roomId,
                 "creatorId" to userId,
                 "title" to room.title,
                 "playerCount" to room.playerCount,
-                "isPublic" to room.isPublic,
+                "isPublic" to room.isPublic
             )
-            roomRef.set(roomData).await()
+
+            db.collection("rooms").document(roomId).set(roomData).await()
+
+            val existingStages = db.collection("rooms").document(roomId)
+                .collection("stages").get().await()
+            existingStages.documents.forEach { it.reference.delete().await() }
 
             room.stages.forEachIndexed { stageIndex, stage ->
-                val stageRef = roomRef.collection("stages").document("stage_$stageIndex")
+                val stageRef = db.collection("rooms").document(roomId)
+                    .collection("stages").document("stage_$stageIndex")
                 stageRef.set(mapOf("stageNumber" to stageIndex)).await()
 
                 stage.puzzles.forEachIndexed { puzzleIndex, puzzle ->
-                    val puzzleRef = stageRef.collection("puzzles").document("puzzle_$puzzleIndex")
-                    puzzleRef.set(mapOf(
-                        "playerIndex" to puzzleIndex,
-                        "title" to puzzle.title,
-                        "clueText" to puzzle.clueText,
-                        "answer" to puzzle.answer
-                    )).await()
+                    stageRef.collection("puzzles").document("puzzle_$puzzleIndex")
+                        .set(mapOf(
+                            "title" to puzzle.title,
+                            "clueText" to puzzle.clueText,
+                            "answer" to puzzle.answer,
+                            "playerIndex" to puzzleIndex,
+                            "imageUri" to puzzle.imageUri
+                        )).await()
                 }
             }
             Result.success(roomId)

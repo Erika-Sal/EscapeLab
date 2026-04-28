@@ -9,16 +9,20 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.example.escapelab.ui.theme.*
 
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(
+    onEditRoom: (String) -> Unit = {}
+) {
     val auth = FirebaseAuth.getInstance()
     val db = FirebaseFirestore.getInstance()
     val userId = auth.currentUser?.uid ?: ""
@@ -32,7 +36,9 @@ fun ProfileScreen() {
             .whereEqualTo("creatorId", userId)
             .get()
             .addOnSuccessListener { result ->
-                createdRooms = result.documents.mapNotNull { it.data }
+                createdRooms = result.documents.mapNotNull { doc ->
+                    doc.data?.toMutableMap()?.apply { put("roomId", doc.id) }
+                }
                 isLoading = false
             }
             .addOnFailureListener {
@@ -102,6 +108,8 @@ fun ProfileScreen() {
 
             items(createdRooms.size) { index ->
                 val room = createdRooms[index]
+                val roomId = room["roomId"] as? String ?: ""
+
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -129,6 +137,23 @@ fun ProfileScreen() {
                             color = ParchmentDim,
                             fontSize = 12.sp
                         )
+                        Spacer(Modifier.height(12.dp))
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            OutlinedButton(
+                                onClick = { onEditRoom(roomId) },
+                                border = ButtonDefaults.outlinedButtonBorder.copy(
+                                    brush = androidx.compose.ui.graphics.SolidColor(AmberMid)
+                                ),
+                                contentPadding = PaddingValues(
+                                    horizontal = 16.dp,
+                                    vertical = 6.dp
+                                )
+                            ) {
+                                Text("Edit", color = AmberMid, fontSize = 12.sp)
+                            }
+                        }
                     }
                 }
                 Spacer(Modifier.height(12.dp))

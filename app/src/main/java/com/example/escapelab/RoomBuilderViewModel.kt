@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-
+import kotlinx.coroutines.tasks.await
 class RoomBuilderViewModel : ViewModel() {
     private val repository = RoomRepository()
 
@@ -15,7 +15,7 @@ class RoomBuilderViewModel : ViewModel() {
 
     private val _saveState = MutableStateFlow<SaveState>(SaveState.Idle)
     val saveState: StateFlow<SaveState> = _saveState
-
+    private var roomId: String = ""
     fun updateTitle(title: String) { roomTitle.value = title }
 
 
@@ -66,6 +66,7 @@ class RoomBuilderViewModel : ViewModel() {
         viewModelScope.launch {
             _saveState.value = SaveState.Saving
             val room = Room(
+                roomId = roomId,
                 title = roomTitle.value,
                 playerCount = playerCount.value,
                 stages = stages.value
@@ -76,11 +77,46 @@ class RoomBuilderViewModel : ViewModel() {
         }
     }
 
+    fun loadRoom(roomId: String) {
+        viewModelScope.launch {
+            try {
+                val db = com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                val roomDoc = db.collection("rooms").document(roomId).get().await()
+
+                roomTitle.value = roomDoc.getString("title") ?: ""
+                playerCount.value = (roomDoc.getLong("playerCount") ?: 2).toInt()
+                this@RoomBuilderViewModel.roomId = roomId
+
+                val stagesSnap = db.collection("rooms").document(roomId)
+                    .collection("stages").get().await()
+
+                val loadedStages = stagesSnap.documents.sortedBy { it.id }.map { stageDoc ->
+                    val puzzlesSnap = db.collection("rooms").document(roomId)
+                        .collection("stages").document(stageDoc.id)
+                        .collection("puzzles").get().await()
+
+                    val loadedPuzzles = puzzlesSnap.documents.sortedBy { it.id }.map { puzzleDoc ->
+                        Puzzle(
+                            title = puzzleDoc.getString("title") ?: "",
+                            clueText = puzzleDoc.getString("clueText") ?: "",
+                            answer = puzzleDoc.getString("answer") ?: "",
+                            playerIndex = (puzzleDoc.getLong("playerIndex") ?: 0).toInt(),
+                            imageUri = puzzleDoc.getString("imageUri") ?: ""
+                        )
+                    }
+                    Stage(puzzles = loadedPuzzles)
+                }
+                stages.value = loadedStages
+            } catch (e: Exception) { }
+        }
+    }
+
     fun resetState() {
         _saveState.value = SaveState.Idle
         roomTitle.value = ""
         playerCount.value = 2
         stages.value = emptyList()
+        roomId = ""
     }
 }
 

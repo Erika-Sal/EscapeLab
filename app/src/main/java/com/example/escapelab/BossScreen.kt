@@ -289,16 +289,23 @@ fun BossScreen(
                     Button(
                         onClick = {
                             scope.launch {
-                                val isCorrect = codeInput == correctCode
-                                submitResult = isCorrect
-                                if (isCorrect) {
-                                    hasSubmitted = true
-                                    db.collection("sessions")
-                                        .document(sessionCode)
-                                        .collection("players")
-                                        .document(userId)
-                                        .update("bossButtonTaps", 1).await()
-                                }
+                                try {
+                                    // Always re-fetch the code fresh right before checking
+                                    val freshSession = db.collection("sessions")
+                                        .document(sessionCode).get().await()
+                                    val freshCode = freshSession.getString("bossCode") ?: ""
+
+                                    val isCorrect = codeInput == freshCode
+                                    submitResult = isCorrect
+                                    if (isCorrect) {
+                                        hasSubmitted = true
+                                        db.collection("sessions")
+                                            .document(sessionCode)
+                                            .collection("players")
+                                            .document(userId)
+                                            .update("bossButtonTaps", 1).await()
+                                    }
+                                } catch (e: Exception) { }
                             }
                         },
                         modifier = Modifier

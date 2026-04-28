@@ -71,12 +71,19 @@ fun MainScreen() {
     var activeSessionCode by remember { mutableStateOf("") }
     val gameViewModel: GameViewModel = viewModel()
     val lobbyViewModel: LobbyViewModel = viewModel()
+    var editingRoomId by remember { mutableStateOf("") }
 
     Box(modifier = Modifier.fillMaxSize()) {
         when (selectedTab) {
             0 -> HomeScreen(onBuildRoom = { selectedTab = 1 })
             1 -> {
                 val roomBuilderViewModel: RoomBuilderViewModel = viewModel()
+                LaunchedEffect(editingRoomId) {
+                    if (editingRoomId.isNotEmpty()) {
+                        roomBuilderViewModel.loadRoom(editingRoomId)
+                        editingRoomId = ""
+                    }
+                }
                 RoomBuilderScreen(
                     viewModel = roomBuilderViewModel,
                     onRoomSaved = {
@@ -85,7 +92,12 @@ fun MainScreen() {
                     }
                 )
             }
-            2 -> ProfileScreen()
+            2 -> ProfileScreen(
+                onEditRoom = { roomId ->
+                    editingRoomId = roomId
+                    selectedTab = 1
+                }
+            )
             3 -> {
                 LaunchedEffect(selectedTab) {
                     lobbyViewModel.resetSession()
