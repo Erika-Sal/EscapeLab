@@ -17,11 +17,8 @@ class RoomBuilderViewModel : ViewModel() {
     val saveState: StateFlow<SaveState> = _saveState
 
     fun updateTitle(title: String) { roomTitle.value = title }
-    val timeLimit = MutableStateFlow(600)
 
-    fun updateTimeLimit(seconds: Int) {
-        timeLimit.value = seconds
-    }
+
     fun updatePlayerCount(count: Int) {
         playerCount.value = count
         stages.value = stages.value.map { stage ->
@@ -71,7 +68,6 @@ class RoomBuilderViewModel : ViewModel() {
             val room = Room(
                 title = roomTitle.value,
                 playerCount = playerCount.value,
-                timeLimitSeconds = timeLimit.value,
                 stages = stages.value
             )
             val result = repository.saveRoom(room)
@@ -84,7 +80,6 @@ class RoomBuilderViewModel : ViewModel() {
         _saveState.value = SaveState.Idle
         roomTitle.value = ""
         playerCount.value = 2
-        timeLimit.value = 600
         stages.value = emptyList()
     }
 }

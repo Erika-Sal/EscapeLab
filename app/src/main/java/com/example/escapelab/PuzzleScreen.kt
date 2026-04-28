@@ -6,6 +6,10 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Chat
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.HourglassEmpty
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,11 +19,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.escapelab.ui.theme.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.HourglassEmpty
-import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.Person
+
 @Composable
 fun PuzzleScreen(
     viewModel: GameViewModel,
@@ -31,20 +32,14 @@ fun PuzzleScreen(
     val answerInput by viewModel.answerInput.collectAsState()
     val answerResult by viewModel.answerResult.collectAsState()
     val chatMessages by viewModel.chatMessages.collectAsState()
-    val timeRemaining by viewModel.timeRemainingSeconds.collectAsState()
-    val timerExpired by viewModel.timerExpired.collectAsState()
     var showChat by remember { mutableStateOf(false) }
 
     LaunchedEffect(session?.status) {
         if (session?.status == "finished") onGameFinished()
     }
 
-    when {
-        timerExpired -> TimeUpScreen(onReturnHome = onGameFinished)
-        session?.status == "boss" -> BossScreen(
-            viewModel = viewModel,
-            onGameFinished = onGameFinished
-        )
+    when (session?.status) {
+        "boss" -> BossScreen(viewModel = viewModel, onGameFinished = onGameFinished)
         else -> {
             Box(
                 modifier = Modifier
@@ -69,7 +64,16 @@ fun PuzzleScreen(
                             fontSize = 20.sp
                         )
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("👥 ${players.size}", color = ParchmentDim, fontSize = 14.sp)
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    imageVector = Icons.Filled.Person,
+                                    contentDescription = null,
+                                    tint = ParchmentDim,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                                Spacer(Modifier.width(4.dp))
+                                Text("${players.size}", color = ParchmentDim, fontSize = 14.sp)
+                            }
                             Spacer(Modifier.width(12.dp))
                             Box {
                                 Button(
@@ -89,7 +93,6 @@ fun PuzzleScreen(
                                         tint = Parchment,
                                         modifier = Modifier.size(20.dp)
                                     )
-
                                 }
                                 if (chatMessages.isNotEmpty()) {
                                     Box(
@@ -112,10 +115,6 @@ fun PuzzleScreen(
                             }
                         }
                     }
-
-                    Spacer(Modifier.height(8.dp))
-
-                    TimerBar(timeRemainingSeconds = timeRemaining)
 
                     Spacer(Modifier.height(8.dp))
                     Text(
@@ -221,11 +220,22 @@ fun PuzzleScreen(
                                 contentAlignment = Alignment.Center
                             ) {
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                    Text(
-                                        "✓ Solved!",
-                                        color = Color(0xFF55E09A),
-                                        fontSize = 20.sp
-                                    )
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Filled.Check,
+                                            contentDescription = null,
+                                            tint = Color(0xFF55E09A),
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                        Text(
+                                            "Solved!",
+                                            color = Color(0xFF55E09A),
+                                            fontSize = 20.sp
+                                        )
+                                    }
                                     Spacer(Modifier.height(8.dp))
                                     Text(
                                         "Waiting for teammates...",
@@ -258,10 +268,10 @@ fun PuzzleScreen(
                                         imageVector = if (player.hasSubmittedCorrect)
                                             Icons.Filled.Check else Icons.Filled.HourglassEmpty,
                                         contentDescription = null,
-                                        tint = if (player.hasSubmittedCorrect) Color(0xFF55E09A) else ParchmentDim,
+                                        tint = if (player.hasSubmittedCorrect)
+                                            Color(0xFF55E09A) else ParchmentDim,
                                         modifier = Modifier.size(16.dp)
                                     )
-
                                     Spacer(Modifier.width(8.dp))
                                     Text(
                                         player.displayName,

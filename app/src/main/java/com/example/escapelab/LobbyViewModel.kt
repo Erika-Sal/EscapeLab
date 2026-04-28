@@ -53,7 +53,6 @@ class LobbyViewModel : ViewModel() {
 
     fun startGame() {
         viewModelScope.launch {
-            repository.setTimer(sessionCode.value, 600)
             repository.startGame(sessionCode.value)
         }
     }

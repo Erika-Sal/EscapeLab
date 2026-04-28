@@ -30,7 +30,6 @@ fun RoomBuilderScreen(
 ) {
     val roomTitle by viewModel.roomTitle.collectAsState()
     val playerCount by viewModel.playerCount.collectAsState()
-    val timeLimit by viewModel.timeLimit.collectAsState()
     val stages by viewModel.stages.collectAsState()
     val saveState by viewModel.saveState.collectAsState()
 
@@ -107,53 +106,6 @@ fun RoomBuilderScreen(
                     }
                 }
 
-                Spacer(Modifier.height(20.dp))
-
-                Text(
-                    "// TIME LIMIT",
-                    style = MaterialTheme.typography.labelLarge,
-                    fontSize = 10.sp,
-                    color = AmberDim
-                )
-                Spacer(Modifier.height(8.dp))
-
-                val timeOptions = listOf(
-                    300 to "5 min",
-                    600 to "10 min",
-                    900 to "15 min",
-                    1800 to "30 min",
-                    0 to "No limit"
-                )
-
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    timeOptions.forEach { (seconds, label) ->
-                        val selected = timeLimit == seconds
-                        Box(
-                            modifier = Modifier
-                                .border(
-                                    1.dp,
-                                    if (selected) AmberGlow else AmberDim,
-                                    RoundedCornerShape(8.dp)
-                                )
-                                .background(
-                                    if (selected) AmberDim else Color.Transparent,
-                                    RoundedCornerShape(8.dp)
-                                )
-                                .clickableNoRipple { viewModel.updateTimeLimit(seconds) }
-                                .padding(horizontal = 10.dp, vertical = 8.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                label,
-                                color = if (selected) AmberGlow else ParchmentDim,
-                                fontSize = 12.sp
-                            )
-                        }
-                    }
-                }
 
                 Spacer(Modifier.height(20.dp))
 

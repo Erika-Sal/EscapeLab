@@ -32,8 +32,7 @@ fun BossScreen(
 ) {
     val players by viewModel.players.collectAsState()
     val session by viewModel.session.collectAsState()
-    val timeRemaining by viewModel.timeRemainingSeconds.collectAsState()
-    val timerExpired by viewModel.timerExpired.collectAsState()
+
     val db = FirebaseFirestore.getInstance()
     val auth = FirebaseAuth.getInstance()
     val scope = rememberCoroutineScope()
@@ -49,10 +48,7 @@ fun BossScreen(
     var hasSubmitted by remember { mutableStateOf(false) }
     var correctCode by remember { mutableStateOf("") }
 
-    if (timerExpired) {
-        TimeUpScreen(onReturnHome = onGameFinished)
-        return
-    }
+
 
     LaunchedEffect(userId) {
         try {
@@ -184,7 +180,6 @@ fun BossScreen(
             Spacer(Modifier.height(8.dp))
 
 
-            TimerBar(timeRemainingSeconds = timeRemaining)
 
             Spacer(Modifier.height(8.dp))
             Text(

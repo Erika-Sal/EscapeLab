@@ -24,8 +24,7 @@ class GameViewModel : ViewModel() {
     val chatMessages = MutableStateFlow<List<ChatMessage>>(emptyList())
     val chatInput = MutableStateFlow("")
 
-    val timeRemainingSeconds = MutableStateFlow<Int?>(null)
-    val timerExpired = MutableStateFlow(false)
+
 
     private var sessionCode = ""
     private var roomId = ""
@@ -35,7 +34,6 @@ class GameViewModel : ViewModel() {
         listenToSession()
         listenToPlayers()
         listenToChat()
-        listenToTimer()
     }
 
     private fun listenToSession() {
@@ -201,44 +199,6 @@ class GameViewModel : ViewModel() {
     }
 
 
-    private fun listenToTimer() {
-        viewModelScope.launch {
-            var endMs: Long? = null
-
-            while (endMs == null) {
-                try {
-                    val beforeRead = System.currentTimeMillis()
-                    val sessionDoc = db.collection("sessions")
-                        .document(sessionCode).get().await()
-                    val afterRead = System.currentTimeMillis()
-
-                    val networkLatency = (afterRead - beforeRead) / 2
-
-                    endMs = sessionDoc.getLong("timerEndMs")
-                    if (endMs != null) {
-
-                    } else {
-                        kotlinx.coroutines.delay(500)
-                    }
-                } catch (e: Exception) {
-                    kotlinx.coroutines.delay(500)
-                }
-            }
-
-            while (true) {
-                val remaining = ((endMs!! - System.currentTimeMillis()) / 1000).toInt()
-                when {
-                    remaining <= 0 -> {
-                        timeRemainingSeconds.value = 0
-                        timerExpired.value = true
-                        break
-                    }
-                    else -> timeRemainingSeconds.value = remaining
-                }
-                kotlinx.coroutines.delay(100)
-            }
-        }
-    }
 }
 
 sealed class AnswerResult {

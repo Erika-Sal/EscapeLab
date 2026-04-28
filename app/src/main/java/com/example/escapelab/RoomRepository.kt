@@ -19,7 +19,6 @@ class RoomRepository {
                 "title" to room.title,
                 "playerCount" to room.playerCount,
                 "isPublic" to room.isPublic,
-                "timeLimitSeconds" to room.timeLimitSeconds
             )
             roomRef.set(roomData).await()
 
